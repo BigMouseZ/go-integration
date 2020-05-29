@@ -2,9 +2,10 @@ package cache
 
 import (
 	"github.com/gomodule/redigo/redis"
-	. "go-integration/conf"
 	"log"
 	"time"
+
+	. "go-integration/conf"
 )
 
 var RedisClient *redis.Pool
