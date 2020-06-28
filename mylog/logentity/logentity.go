@@ -2,6 +2,7 @@ package logentity
 
 import (
 	"fmt"
+	"math"
 	"os"
 	"path"
 	"runtime"
@@ -77,16 +78,24 @@ func (l *logEntity) Debug(a ...interface{}) {
 		fileInfo, _ := l.loggerFile.Stat()
 		loggerFileMax := l.loggerFileMax
 		unit := loggerFileMax[len(loggerFileMax)-2:]
+		loggerFileSize,_:=strconv.ParseFloat(loggerFileMax[0:len(loggerFileMax)-2],64)
 		switch unit {
 		case "KB":
-			formatFileSize(fileInfo.Size())
-			// loggerFileMax
+			currentSize :=formatFileSize(fileInfo.Size(), "KB")
+			if currentSize>loggerFileSize{
+				//日志分隔
+
+
+			}
 		case "MB":
-			l.loggerFileMax = loggerFileMax
+			currentSize :=formatFileSize(fileInfo.Size(), "MB")
+			if currentSize>loggerFileSize{
+				//日志分隔
+			}
 		default:
 			l.loggerFileMax = "10MB"
 		}
-		fmt.Printf("文件大小：%v", formatFileSize(fileInfo.Size()))
+		// fmt.Printf("文件大小：%v", formatFileSize(fileInfo.Size()))
 		fmt.Println()
 		fmt.Println(pc, file, line)
 		fileName := "[" + path.Base(file) + "]"
@@ -159,19 +168,28 @@ func (l *logEntity) Fatal(a ...interface{}) {
 }
 
 // 字节的单位转换 保留两位小数
-func formatFileSize(fileSize int64) (size string) {
+func formatFileSize(fileSize int64, unit string) (size float64) {
 	if fileSize < 1024 {
 		// return strconv.FormatInt(fileSize, 10) + "B"
-		return fmt.Sprintf("%.2fB", float64(fileSize)/float64(1))
-	} else if fileSize < (1024 * 1024) {
-		return fmt.Sprintf("%.2fKB", float64(fileSize)/float64(1024))
-	} else if fileSize < (1024 * 1024 * 1024) {
-		return fmt.Sprintf("%.2fMB", float64(fileSize)/float64(1024*1024))
-	} else if fileSize < (1024 * 1024 * 1024 * 1024) {
-		return fmt.Sprintf("%.2fGB", float64(fileSize)/float64(1024*1024*1024))
+		size, _ := strconv.ParseFloat(fmt.Sprintf("%.2fB", float64(fileSize)/float64(1)), 64)
+		return size
+	} else if unit == "KB" {
+		re:=math.Round(float64(fileSize)/float64(1024)) //fmt.Sprintf("%.2f", float64(fileSize)/float64(1024))
+		// size, _ := strconv.ParseFloat(re, 64)
+		size :=re
+		return size
+
+	} else if unit == "MB" {
+		size, _ := strconv.ParseFloat(fmt.Sprintf("%.2f", float64(fileSize)/float64(1024*1024)), 64)
+		return size
+	} else if unit == "GB" {
+		size, _ := strconv.ParseFloat(fmt.Sprintf("%.2f", float64(fileSize)/float64(1024*1024*1024)), 64)
+		return size
 	} else if fileSize < (1024 * 1024 * 1024 * 1024 * 1024) {
-		return fmt.Sprintf("%.2fTB", float64(fileSize)/float64(1024*1024*1024*1024))
+		size, _ := strconv.ParseFloat(fmt.Sprintf("%.2f", float64(fileSize)/float64(1024*1024*1024*1024)), 64)
+		return size
 	} else { // if fileSize < (1024 * 1024 * 1024 * 1024 * 1024 * 1024)
-		return fmt.Sprintf("%.2fEB", float64(fileSize)/float64(1024*1024*1024*1024*1024))
+		size, _ := strconv.ParseFloat(fmt.Sprintf("%.2f", float64(fileSize)/float64(1024*1024)), 64)
+		return size
 	}
 }
