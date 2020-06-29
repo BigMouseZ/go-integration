@@ -31,7 +31,6 @@ func Zip(srcFile string, destZip string) error {
 		}
 
 		header.Name = strings.TrimPrefix(path, filepath.Dir(srcFile)+"/")
-		// header.Name = path
 		if info.IsDir() {
 			header.Name += "/"
 		} else {
@@ -40,20 +39,20 @@ func Zip(srcFile string, destZip string) error {
 		}
 		//
 
-		//创建在zip内的文件或者目录
+		// 创建在zip内的文件或者目录
 		writer, err := archive.CreateHeader(header)
 		if err != nil {
 			return err
 		}
 
 		if ! info.IsDir() {
-			//打开需要压缩的文件
+			// 打开需要压缩的文件
 			file, err := os.Open(path)
 			if err != nil {
 				return err
 			}
 			defer file.Close()
-			//将待压缩文件拷贝给zip内文件
+			// 将待压缩文件拷贝给zip内文件
 			_, err = io.Copy(writer, file)
 		}
 		return err
@@ -62,4 +61,40 @@ func Zip(srcFile string, destZip string) error {
 		fmt.Println(worlkerr)
 	}
 	return err
+}
+func Unzip(zipFile string, destDir string) error {
+	zipReader, err := zip.OpenReader(zipFile)
+	if err != nil {
+		return err
+	}
+	defer zipReader.Close()
+
+	for _, f := range zipReader.File {
+		fpath := filepath.Join(destDir, f.Name)
+		if f.FileInfo().IsDir() {
+			os.MkdirAll(fpath, os.ModePerm)
+		} else {
+			if err = os.MkdirAll(filepath.Dir(fpath), os.ModePerm); err != nil {
+				return err
+			}
+
+			inFile, err := f.Open()
+			if err != nil {
+				return err
+			}
+			defer inFile.Close()
+
+			outFile, err := os.OpenFile(fpath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
+			if err != nil {
+				return err
+			}
+			defer outFile.Close()
+
+			_, err = io.Copy(outFile, inFile)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
