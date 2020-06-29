@@ -8,6 +8,8 @@ import (
 	"runtime"
 	"strconv"
 	"time"
+
+	"go-integration/mylog/ziputil"
 )
 
 const (
@@ -19,43 +21,45 @@ const (
 )
 
 type logEntity struct {
-	loggerLevel    int
-	loggerFilePath string
-	loggerFileName string
-	loggerFileMax  string
-	loggerFile     *os.File
+	loggerLevel      int
+	loggerFilePath   string
+	loggerFileName   string
+	loggerFileMax    string
+	loggerFileMaxDay int
+	loggerFile       *os.File
 }
 
 // 结构体
-func NewlogEntity(loggerLevel int, loggerFilePath, loggerFileName, loggerFileMax string) *logEntity {
+func NewlogEntity(loggerLevel int, loggerFilePath, loggerFileName, loggerFileMax string, loggerFileMaxDay int) *logEntity {
 	log := &logEntity{
-		loggerLevel:    loggerLevel,
-		loggerFilePath: loggerFilePath,
-		loggerFileName: loggerFileName,
-		loggerFileMax:  loggerFileMax,
+		loggerLevel:      loggerLevel,
+		loggerFilePath:   loggerFilePath,
+		loggerFileName:   loggerFileName,
+		loggerFileMax:    loggerFileMax,
+		loggerFileMaxDay: loggerFileMaxDay,
 	}
-	log.initLoaggrtFile(loggerFilePath, loggerFileName, loggerFileMax)
+	log.initLoaggrtFile()
 	return log
 }
 
-func (l *logEntity) initLoaggrtFile(loggerFilePath, loggerFileName, loggerFileMax string) {
-	if len(loggerFileMax) < 2 {
+func (l *logEntity) initLoaggrtFile() {
+	if len(l.loggerFileMax) < 2 {
 		l.loggerFileMax = "10MB"
 	} else {
-		unit := loggerFileMax[len(loggerFileMax)-2:]
-		switch unit {
-		case "KB":
-			l.loggerFileMax = loggerFileMax
-		case "MB":
-			l.loggerFileMax = loggerFileMax
-		default:
-			l.loggerFileMax = "10MB"
-		}
+		/*	unit := l.loggerFileMax[len(l.loggerFileMax)-2:]
+			switch unit {
+			case "KB":
+				l.loggerFileMax = loggerFileMax
+			case "MB":
+				l.loggerFileMax = loggerFileMax
+			default:
+				l.loggerFileMax = "10MB"
+			}*/
 	}
 	// os.MkdirAll(path.Dir(fn))
-	err := os.MkdirAll(loggerFilePath, os.ModePerm)
+	err := os.MkdirAll(l.loggerFilePath, os.ModePerm)
 	if err == nil {
-		file, err := os.OpenFile(loggerFilePath+loggerFileName, os.O_CREATE|os.O_RDWR|os.O_APPEND, os.ModePerm)
+		file, err := os.OpenFile(l.loggerFilePath+l.loggerFileName, os.O_CREATE|os.O_RDWR|os.O_APPEND, os.ModePerm)
 		if err != nil {
 			panic("日志文件创建失败:" + err.Error())
 		}
@@ -74,23 +78,31 @@ func (l *logEntity) Debug(a ...interface{}) {
 	pc, file, line, ok := runtime.Caller(1)
 	if ok {
 		// 判断文件是否超出大小
-
 		fileInfo, _ := l.loggerFile.Stat()
 		loggerFileMax := l.loggerFileMax
 		unit := loggerFileMax[len(loggerFileMax)-2:]
-		loggerFileSize,_:=strconv.ParseFloat(loggerFileMax[0:len(loggerFileMax)-2],64)
+		loggerFileSize, _ := strconv.ParseFloat(loggerFileMax[0:len(loggerFileMax)-2], 64)
 		switch unit {
 		case "KB":
-			currentSize :=formatFileSize(fileInfo.Size(), "KB")
-			if currentSize>loggerFileSize{
-				//日志分隔
+			currentSize := formatFileSize(fileInfo.Size(), "KB")
+			if currentSize > loggerFileSize {
+				// 日志分隔
+				err := ziputil.Zip(l.loggerFilePath+l.loggerFileName, l.loggerFilePath+l.loggerFileName+"."+time.Now().Format("2006-01-02")+".zip")
+				if err != nil {
+					fmt.Println("日志压缩失败")
+				} else {
+					// 清空日志文件
+					fmt.Println(l.loggerFilePath + l.loggerFileName)
+					if err := os.Truncate(l.loggerFilePath+l.loggerFileName, 0); err != nil {
+						fmt.Println("清空日志文件异常:", err)
+					}
 
-
+				}
 			}
 		case "MB":
-			currentSize :=formatFileSize(fileInfo.Size(), "MB")
-			if currentSize>loggerFileSize{
-				//日志分隔
+			currentSize := formatFileSize(fileInfo.Size(), "MB")
+			if currentSize > loggerFileSize {
+				// 日志分隔
 			}
 		default:
 			l.loggerFileMax = "10MB"
@@ -102,7 +114,7 @@ func (l *logEntity) Debug(a ...interface{}) {
 		line := "[" + strconv.Itoa(line) + "]"
 		_, err := fmt.Fprintln(l.loggerFile, timeNow, fileName, line, a)
 		if err != nil {
-			fmt.Println("DEBUG日志记录失败！")
+			fmt.Println("DEBUG日志记录失败！", err)
 		}
 	}
 
@@ -174,9 +186,9 @@ func formatFileSize(fileSize int64, unit string) (size float64) {
 		size, _ := strconv.ParseFloat(fmt.Sprintf("%.2fB", float64(fileSize)/float64(1)), 64)
 		return size
 	} else if unit == "KB" {
-		re:=math.Round(float64(fileSize)/float64(1024)) //fmt.Sprintf("%.2f", float64(fileSize)/float64(1024))
+		re := math.Round(float64(fileSize) / float64(1024)) // fmt.Sprintf("%.2f", float64(fileSize)/float64(1024))
 		// size, _ := strconv.ParseFloat(re, 64)
-		size :=re
+		size := re
 		return size
 
 	} else if unit == "MB" {

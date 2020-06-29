@@ -6,7 +6,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 // srcFile could be a single file or a directory
@@ -30,7 +29,7 @@ func Zip(srcFile string, destZip string) error {
 			return err
 		}
 
-		header.Name = strings.TrimPrefix(path, filepath.Dir(srcFile)+"/")
+		// header.Name = strings.TrimPrefix(path, filepath.Dir(srcFile)+"/")
 		if info.IsDir() {
 			header.Name += "/"
 		} else {
@@ -45,7 +44,7 @@ func Zip(srcFile string, destZip string) error {
 			return err
 		}
 
-		if ! info.IsDir() {
+		if !info.IsDir() {
 			// 打开需要压缩的文件
 			file, err := os.Open(path)
 			if err != nil {
