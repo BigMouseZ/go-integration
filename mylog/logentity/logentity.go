@@ -94,7 +94,7 @@ func (l *logEntity) Debug(a ...interface{}) {
 					// 清空日志文件
 					fmt.Println(l.loggerFilePath + l.loggerFileName)
 					if err := os.Truncate(l.loggerFilePath+l.loggerFileName, 0); err != nil {
-						fmt.Println("清空日志文件异常:", err)
+						fmt.Println("清空日志文件 异常:", err)
 					}
 
 				}
