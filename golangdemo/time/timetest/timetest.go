@@ -24,6 +24,7 @@ var days = [...]string{
 
 // String returns the English name of the day ("Sunday", "Monday", ...).
 func (d Weekday) String() string {
+
 	if Sunday <= d && d <= Saturday {
 		return days[d]
 	}
