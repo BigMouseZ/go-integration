@@ -57,4 +57,12 @@ func TestTwo() {
 	fmt.Println(time.Now().Before(time.Now().Add(time.Hour)))
 	fmt.Println("增加天数", time.Now().AddDate(1, 1, 2))
 
+	//返回当前本地时间戳:
+	fmt.Println("返回当前本地时间戳:", time.Now().Unix())
+	t1 := time.Now()
+
+	time.Sleep(time.Second * 2)
+
+	elapsed := time.Since(t1)
+	fmt.Println("程序运行时间为: ", elapsed)
 }
