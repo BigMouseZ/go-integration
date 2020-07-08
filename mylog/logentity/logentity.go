@@ -38,11 +38,11 @@ func NewlogEntity(loggerLevel int, loggerFilePath, loggerFileName, loggerFileMax
 		loggerFileMax:    loggerFileMax,
 		loggerFileMaxDay: loggerFileMaxDay,
 	}
-	log.initLoaggrtFile()
+	log.initLoaggerFile()
 	return log
 }
 
-func (l *logEntity) initLoaggrtFile() {
+func (l *logEntity) initLoaggerFile() {
 	if len(l.loggerFileMax) < 2 {
 		l.loggerFileMax = "10MB"
 	} else {
