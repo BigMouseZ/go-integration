@@ -1,9 +1,20 @@
 package main
 
-import "testing"
+import (
+	"crypto/md5"
+	"fmt"
+	"io"
+	"testing"
+)
 
 func TestMd5(t *testing.T) {
+	data := []byte("These pretzels are making me thirsty.")
+	fmt.Printf("%x", md5.Sum(data))
 
+	h := md5.New()
+	io.WriteString(h, "The fog is getting thicker!")
+	io.WriteString(h, "And Leon's getting laaarger!")
+	fmt.Printf("%x", h.Sum(nil))
 }
 
 func TestAES(t *testing.T) {
