@@ -15,7 +15,7 @@ func main() {
 
 }
 
-//1、检查指定路径是否为文件夹
+// 1、检查指定路径是否为文件夹
 func IsDir(name string) bool {
 	if info, err := os.Stat(name); err == nil {
 		return info.IsDir()
@@ -23,7 +23,7 @@ func IsDir(name string) bool {
 	return false
 }
 
-//2、检查文件是否存在
+// 2、检查文件是否存在
 func FileIsExisted(filename string) bool {
 	existed := true
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
@@ -32,10 +32,10 @@ func FileIsExisted(filename string) bool {
 	return existed
 }
 
-//3、创建文件夹（如果文件夹不存在则创建）
+// 3、创建文件夹（如果文件夹不存在则创建）
 func MakeDir(dir string) error {
 	if !FileIsExisted(dir) {
-		if err := os.MkdirAll(dir, 0777); err != nil { //os.ModePerm
+		if err := os.MkdirAll(dir, 0777); err != nil { // os.ModePerm
 			fmt.Println("MakeDir failed:", err)
 			return err
 		}
@@ -43,8 +43,8 @@ func MakeDir(dir string) error {
 	return nil
 }
 
-//4、复制文件
-//使用io.Copy
+// 4、复制文件
+// 使用io.Copy
 func CopyFile(src, des string) (written int64, err error) {
 	srcFile, err := os.Open(src)
 	if err != nil {
@@ -52,12 +52,12 @@ func CopyFile(src, des string) (written int64, err error) {
 	}
 	defer srcFile.Close()
 
-	//获取源文件的权限
+	// 获取源文件的权限
 	fi, _ := srcFile.Stat()
 	perm := fi.Mode()
 
-	//desFile, err := os.Create(des)  //无法复制源文件的所有权限
-	desFile, err := os.OpenFile(des, os.O_RDWR|os.O_CREATE|os.O_TRUNC, perm) //复制源文件的所有权限
+	// desFile, err := os.Create(des)  //无法复制源文件的所有权限
+	desFile, err := os.OpenFile(des, os.O_RDWR|os.O_CREATE|os.O_TRUNC, perm) // 复制源文件的所有权限
 	if err != nil {
 		return 0, err
 	}
@@ -66,9 +66,9 @@ func CopyFile(src, des string) (written int64, err error) {
 	return io.Copy(desFile, srcFile)
 }
 
-//使用ioutil.WriteFile()和ioutil.ReadFile()
+// 使用ioutil.WriteFile()和ioutil.ReadFile()
 func CopyFile2(src, des string) (written int64, err error) {
-	//获取源文件的权限
+	// 获取源文件的权限
 	srcFile, err := os.Open(src)
 	if err != nil {
 		return 0, err
@@ -90,10 +90,10 @@ func CopyFile2(src, des string) (written int64, err error) {
 	return int64(len(input)), nil
 }
 
-//使用os.Read()和os.Write()
+// 使用os.Read()和os.Write()
 func CopyFile3(src, des string, bufSize int) (written int64, err error) {
 	if bufSize <= 0 {
-		bufSize = 1 * 1024 * 1024 //1M
+		bufSize = 1 * 1024 * 1024 // 1M
 	}
 	buf := make([]byte, bufSize)
 
@@ -103,7 +103,7 @@ func CopyFile3(src, des string, bufSize int) (written int64, err error) {
 	}
 	defer srcFile.Close()
 
-	//获取源文件的权限
+	// 获取源文件的权限
 	fi, _ := srcFile.Stat()
 	perm := fi.Mode()
 
@@ -134,9 +134,9 @@ func CopyFile3(src, des string, bufSize int) (written int64, err error) {
 	return int64(count), nil
 }
 
-//5、复制整个文件夹
+// 5、复制整个文件夹
 func CopyDir(srcPath, desPath string) error {
-	//检查目录是否正确
+	// 检查目录是否正确
 	if srcInfo, err := os.Stat(srcPath); err != nil {
 		return err
 	} else {
@@ -162,12 +162,12 @@ func CopyDir(srcPath, desPath string) error {
 			return err
 		}
 
-		//复制目录是将源目录中的子目录复制到目标路径中，不包含源目录本身
+		// 复制目录是将源目录中的子目录复制到目标路径中，不包含源目录本身
 		if path == srcPath {
 			return nil
 		}
 
-		//生成新路径
+		// 生成新路径
 		destNewPath := strings.Replace(path, srcPath, desPath, -1)
 
 		if !f.IsDir() {
@@ -184,7 +184,7 @@ func CopyDir(srcPath, desPath string) error {
 	return err
 }
 
-//6、遍历指定文件夹中的所有文件（不进入下一级子目录
+// 6、遍历指定文件夹中的所有文件（不进入下一级子目录
 /* 获取指定路径下的所有文件，只搜索当前路径，不进入下一级目录，可匹配后缀过滤（suffix为空则不过滤）*/
 func ListDir(dir, suffix string) (files []string, err error) {
 	files = []string{}
@@ -194,14 +194,14 @@ func ListDir(dir, suffix string) (files []string, err error) {
 		return nil, err
 	}
 
-	suffix = strings.ToLower(suffix) //匹配后缀
+	suffix = strings.ToLower(suffix) // 匹配后缀
 
 	for _, _file := range _dir {
 		if _file.IsDir() {
-			continue //忽略目录
+			continue // 忽略目录
 		}
 		if len(suffix) == 0 || strings.HasSuffix(strings.ToLower(_file.Name()), suffix) {
-			//文件后缀匹配
+			// 文件后缀匹配
 			files = append(files, path.Join(dir, _file.Name()))
 		}
 	}
@@ -209,19 +209,19 @@ func ListDir(dir, suffix string) (files []string, err error) {
 	return files, nil
 }
 
-//7、遍历指定路径及其子目录中的所有文件
+// 7、遍历指定路径及其子目录中的所有文件
 /* 获取指定路径下以及所有子目录下的所有文件，可匹配后缀过滤（suffix为空则不过滤）*/
 func WalkDir(dir, suffix string) (files []string, err error) {
 	files = []string{}
 
 	err = filepath.Walk(dir, func(fname string, fi os.FileInfo, err error) error {
 		if fi.IsDir() {
-			//忽略目录
+			// 忽略目录
 			return nil
 		}
 
 		if len(suffix) == 0 || strings.HasSuffix(strings.ToLower(fi.Name()), suffix) {
-			//文件后缀匹配
+			// 文件后缀匹配
 			files = append(files, fname)
 		}
 
