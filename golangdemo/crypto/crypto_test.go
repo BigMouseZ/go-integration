@@ -20,7 +20,7 @@ func TestMd5(t *testing.T) {
 	fmt.Printf("%x", h.Sum(nil))
 	fmt.Println()
 
-	str := "These pretzels are making me thirsty."
+	str := "1"
 	// 方法一
 	data = []byte(str)
 	has := md5.Sum(data)
@@ -38,117 +38,38 @@ func TestMd5(t *testing.T) {
 }
 
 func TestAES(t *testing.T) {
-	has, err := AesEncryptSimple([]byte("guoshuaijie"), "signalwayKey", "signalwayiv")
-	if err != nil {
-		panic(err)
-	}
-	md5str1 := fmt.Sprintf("%x", has) // 将[]byte转成16进制
-	fmt.Println(md5str1)
-	raw := []byte("guoshuaijie")
-	key := []byte("huyanyan87654321")
-	//key2:=[]byte("guoshuai87654321")
-	encryptByte := EncryptAES(raw, key)
-	if encryptByte != nil {
-		decryptByte := DecryptAES(encryptByte, key)
-		if decryptByte != nil {
-			fmt.Println(string(decryptByte))
-		}
-	}
+	x := []byte("世界上最邪恶最专制的现代奴隶制国家--朝鲜")
+	key := []byte("hgfedcba87654321")
+	x1 := encryptAES(x, key)
+	fmt.Print(string(x1))
+	x2 := decryptAES(x1, key)
+	fmt.Print(string(x2))
 }
-
-// 加密
-func AesEncryptSimple(origData []byte, key string, iv string) ([]byte, error) {
-	return AesDecryptPkcs5(origData, []byte(key), []byte(iv))
-}
-
-func AesEncryptPkcs5(origData []byte, key []byte, iv []byte) ([]byte, error) {
-	return AesEncrypt(origData, key, iv, PKCS5Padding)
-}
-
-func AesEncrypt(origData []byte, key []byte, iv []byte, paddingFunc func([]byte, int) []byte) ([]byte, error) {
-	block, err := aes.NewCipher(key)
-	if err != nil {
-		return nil, err
-	}
-	blockSize := block.BlockSize()
-	origData = paddingFunc(origData, blockSize)
-
-	blockMode := cipher.NewCBCEncrypter(block, iv)
-	crypted := make([]byte, len(origData))
-	blockMode.CryptBlocks(crypted, origData)
-	return crypted, nil
-}
-
-// 解密
-func AesDecryptSimple(crypted []byte, key string, iv string) ([]byte, error) {
-	return AesDecryptPkcs5(crypted, []byte(key), []byte(iv))
-}
-
-func AesDecryptPkcs5(crypted []byte, key []byte, iv []byte) ([]byte, error) {
-	return AesDecrypt(crypted, key, iv, PKCS5UnPadding)
-}
-
-func AesDecrypt(crypted, key []byte, iv []byte, unPaddingFunc func([]byte) []byte) ([]byte, error) {
-	block, err := aes.NewCipher(key)
-	if err != nil {
-		return nil, err
-	}
-	blockMode := cipher.NewCBCDecrypter(block, iv)
-	origData := make([]byte, len(crypted))
-	blockMode.CryptBlocks(origData, crypted)
-	origData = unPaddingFunc(origData)
-	return origData, nil
-}
-
-func PKCS5Padding(ciphertext []byte, blockSize int) []byte {
-	padding := blockSize - len(ciphertext)%blockSize
-	padtext := bytes.Repeat([]byte{byte(padding)}, padding)
-	return append(ciphertext, padtext...)
-}
-
-func PKCS5UnPadding(origData []byte) []byte {
-	length := len(origData)
-	unpadding := int(origData[length-1])
-	if length < unpadding {
-		return []byte("unpadding error")
-	}
-	return origData[:(length - unpadding)]
-}
-
 func padding(src []byte, blocksize int) []byte {
 	padnum := blocksize - len(src)%blocksize
 	pad := bytes.Repeat([]byte{byte(padnum)}, padnum)
 	return append(src, pad...)
 }
 
-func unPadding(src []byte) []byte {
+func unpadding(src []byte) []byte {
 	n := len(src)
-	unPadNum := int(src[n-1])
-	if unPadNum > n {
-		return nil
-	}
-	return src[:n-unPadNum]
+	unpadnum := int(src[n-1])
+	return src[:n-unpadnum]
 }
 
-func EncryptAES(src []byte, key []byte) []byte {
-	block, err := aes.NewCipher(key)
-	if err != nil {
-		return nil
-	}
+func encryptAES(src []byte, key []byte) []byte {
+	block, _ := aes.NewCipher(key)
 	src = padding(src, block.BlockSize())
-	blockMode := cipher.NewCBCEncrypter(block, key)
-	blockMode.CryptBlocks(src, src)
+	blockmode := cipher.NewCBCEncrypter(block, key)
+	blockmode.CryptBlocks(src, src)
 	return src
 }
 
-func DecryptAES(src []byte, key []byte) []byte {
-	block, err := aes.NewCipher(key)
-	if err != nil {
-		return nil
-	}
-	blockMode := cipher.NewCBCDecrypter(block, key)
-	blockMode.CryptBlocks(src, src)
-	src = unPadding(src)
+func decryptAES(src []byte, key []byte) []byte {
+	block, _ := aes.NewCipher(key)
+	blockmode := cipher.NewCBCDecrypter(block, key)
+	blockmode.CryptBlocks(src, src)
+	src = unpadding(src)
 	return src
 }
 
