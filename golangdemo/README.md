@@ -20,58 +20,58 @@ http	            通过http包，只需要数行代码，即可实现一个爬�
 
 
 目录	            包	                                                说明
-                    bufio	                    实现缓冲的I/O
-                    bytes                            提供了对字节切片操作的函数
+                    bufio	                                            实现缓冲的I/O
+                    bytes                                                   提供了对字节切片操作的函数
                     crypto	                                            收集了常见的加密常数
                     errors	                                            实现了操作错误的函数
                     Expvar	                                            为公共变量提供了一个标准的接口，如服务器中的运算计数器
                     flag	                                            实现了命令行标记解析
-                    fmt	                                            实现了格式化输入输出
+                    fmt	                                                    实现了格式化输入输出
                     hash	                                            提供了哈希函数接口
                     html	                                            实现了一个HTML5兼容的分词器和解析器
                     image	                                            实现了一个基本的二维图像库
-                    io	                                            提供了对I/O原语的基本接口
-                    log	                                            它是一个简单的记录包，提供最基本的日志功能
+                    io	                                                    提供了对I/O原语的基本接口
+                    log	                                                    它是一个简单的记录包，提供最基本的日志功能
                     math	                                            提供了一些基本的常量和数学函数
                     mine	                                            实现了部分的MIME规范
-                    net	                                            提供了一个对UNIX网络套接字的可移植接口，包括TCP/IP、 UDP域名解析和UNIX域套接字
-                    os	为操作系统功能实现了一个平台无关的接口
-                    path	实现了对斜线分割的文件名路径的操作
-                    reflect	实现了运行时反射，允许一个程序以任意类型操作对象
-                    regexp	实现了一个简单的正则表达式库
-                    runtime	包含与Go运行时系统交互的操作，如控制goroutine的函数
-                    sort	提供对集合排序的基础函数集
-                    strconv	实现了在基本数据类型和字符串之间的转换
-                    strings	实现了操作字符串的简单函数
-                    sync	提供了基本的同步机制，如互斥锁
-                    syscall	包含一个低级的操作系统原语的接口
-                    testing	提供对自动测试Go包的支持
-                    time	提供测量和显示时间的功能
-                    unicode	Unicode编码相关的基础函数
+                    net	                                                    提供了一个对UNIX网络套接字的可移植接口，包括TCP/IP、 UDP域名解析和UNIX域套接字
+                    os	                                                    为操作系统功能实现了一个平台无关的接口
+                    path	                                            实现了对斜线分割的文件名路径的操作
+                    reflect                                         	    实现了运行时反射，允许一个程序以任意类型操作对象
+                    regexp	                                            实现了一个简单的正则表达式库
+                    runtime	                                            包含与Go运行时系统交互的操作，如控制goroutine的函数
+                    sort	                                            提供对集合排序的基础函数集
+                    strconv	                                            实现了在基本数据类型和字符串之间的转换
+                    strings	                                            实现了操作字符串的简单函数
+                    sync	                                            提供了基本的同步机制，如互斥锁
+                    syscall	                                            包含一个低级的操作系统原语的接口
+                    testing	                                            提供对自动测试Go包的支持
+                    time	                                            提供测量和显示时间的功能
+                    unicode	                                            Unicode编码相关的基础函数
 archive	
-                    tar	实现对tar压缩文档的访问
-                    zip	提供对ZIP压缩文档的读和写支持
+                    tar	                                                    实现对tar压缩文档的访问
+                    zip	                                                    提供对ZIP压缩文档的读和写支持
 compress	
-                    bzip2	实现了bzip2解压缩
-                    flate	实现了RFC 1951中所定义的DEFLATE压缩数据格式
-                    gzip	实现了RFC 1951中所定义的gzip格式压缩文件的读和写
-                    lzw	实现了 Lempel-Ziv-Welch编码格式的压缩的数据格式
-                    zlib	实现了RFC 1950中所定义的zlib格式压缩数据的读和写
+                    bzip2	                                            实现了bzip2解压缩
+                    flate	                                            实现了RFC 1951中所定义的DEFLATE压缩数据格式
+                    gzip	                                            实现了RFC 1951中所定义的gzip格式压缩文件的读和写
+                    lzw	                                                    实现了 Lempel-Ziv-Welch编码格式的压缩的数据格式
+                    zlib	                                            实现了RFC 1950中所定义的zlib格式压缩数据的读和写
 container	
-                    heap	提供了实现heap.Interface接口的任何类型的堆操作
-                    list	实现了一个双链表
-                    ring	实现了对循环链表的操作
+                    heap	                                            提供了实现heap.Interface接口的任何类型的堆操作
+                    list	                                            实现了一个双链表
+                    ring	                                            实现了对循环链表的操作
 crypto	
-                    aes	实现了AES加密（以前的Rijndael）
-                    cipher	实现了标准的密码块模式，该模式可包装进低级的块加密实现中
-                    des	实现了数据加密标准（ Data Encryption Standard，DES）和三重数据加密算法（ TripleData Encryption Algorithm， TDEA）
-                    dsa	实现了FIPS 186-3所定义的数据签名算法（ Digital Signature Algorithm）
-                    ecdsa	实现了FIPS 186-3所定义的椭圆曲线数据签名算法（ Elliptic Curve Digital Signature Algorithm）
-                    elliptic	实现了素数域上几个标准的椭圆曲线
-                    hmac	实现了键控哈希消息身份验证码（ Keyed-Hash Message Authentication Code，HMAC）
-                    md5	实现了RFC 1321中所定义的MD5哈希算法
-                    rand	实现了一个加密安全的伪随机数生成器
-                    rc4	实现了RC4加密，其定义见Bruce Schneier的应用密码学（ Applied Cryptography）
+                    aes	                                                    实现了AES加密（以前的Rijndael）
+                    cipher	                                            实现了标准的密码块模式，该模式可包装进低级的块加密实现中
+                    des	                                                    实现了数据加密标准（ Data Encryption Standard，DES）和三重数据加密算法（ TripleData Encryption Algorithm， TDEA）
+                    dsa	                                                    实现了FIPS 186-3所定义的数据签名算法（ Digital Signature Algorithm）
+                    ecdsa	                                            实现了FIPS 186-3所定义的椭圆曲线数据签名算法（ Elliptic Curve Digital Signature Algorithm）
+                    elliptic	                                            实现了素数域上几个标准的椭圆曲线
+                    hmac	                                            实现了键控哈希消息身份验证码（ Keyed-Hash Message Authentication Code，HMAC）
+                    md5	                                                    实现了RFC 1321中所定义的MD5哈希算法
+                    rand	                                            实现了一个加密安全的伪随机数生成器
+                    rc4	                                                实现了RC4加密，其定义见Bruce Schneier的应用密码学（ Applied Cryptography）
                     rsa	实现了PKCS#1中所定义的RSA加密
                     sha1	实现了RFC 3174中所定义的SHA1哈希算法
                     sha256	实现了FIPS 180-2中所定义的SHA224和SHA256哈希算法
@@ -125,27 +125,29 @@ image
                     png	实现了一个PNG图像解码器和编码器
 index	
                     suffixarray	通过构建内存索引实现的高速字符串匹配查找算法
-io	ioutil	实现了一些实用的I/O函数
-log	syslog	提供了对系统日志服务的简单接口
+io	
+                    ioutil	实现了一些实用的I/O函数
+log	
+                    syslog	提供了对系统日志服务的简单接口
 math	
                     big	实现了多精度的算术运算（大数）
                     cmplx	为复数提供了基本的常量和数学函数
                     rand	实现了伪随机数生成器
-mime	multipart	实现了在RFC 2046中定义的MIME多个部分的解析
-net	http	提供了HTTP客户端和服务器的实现
-mail	实现了对邮件消息的解析
-rpc	提供了对一个来自网络或其他I/O连接的对象可导出的方法的访问
-smtp	实现了定义于RFC 5321中的简单邮件传输协议（ Simple Mail Transfer Protocol)
-textproto	实现了在HTTP、 NNTP和SMTP中基于文本的通用的请求/响应协议
-url	解析URL并实现查询转义
-http/cgi	实现了定义于RFC 3875中的CGI（通用网关接口）
-http/fcgi	实现了FastCGI协议
-http/httptest	提供了一些HTTP测试应用
-http/httputil	提供了一些HTTP应用函数，这些是对net/http包中的东西的补充，只不过相对
-不太常用
-http/pprof	通过其HTTP服务器运行时提供性能测试数据，该数据的格式正是pprof可视化工
-具需要的
-rpc/jsonrpc	为rpc包实现了一个JSON-RPC ClientCodec和ServerCodec
+mime	
+                    multipart	实现了在RFC 2046中定义的MIME多个部分的解析
+net	
+                    http	提供了HTTP客户端和服务器的实现
+                    mail	实现了对邮件消息的解析
+                    rpc	提供了对一个来自网络或其他I/O连接的对象可导出的方法的访问
+                    smtp	实现了定义于RFC 5321中的简单邮件传输协议（ Simple Mail Transfer Protocol)
+                    textproto	实现了在HTTP、 NNTP和SMTP中基于文本的通用的请求/响应协议
+                    url	解析URL并实现查询转义
+                    http/cgi	实现了定义于RFC 3875中的CGI（通用网关接口）
+                    http/fcgi	实现了FastCGI协议
+                    http/httptest	提供了一些HTTP测试应用
+                    http/httputil	提供了一些HTTP应用函数，这些是对net/http包中的东西的补充，只不过相对不太常用
+                    http/pprof	通过其HTTP服务器运行时提供性能测试数据，该数据的格式正是pprof可视化工具需要的
+                    rpc/jsonrpc	为rpc包实现了一个JSON-RPC ClientCodec和ServerCodec
 os	exec	可运行外部命令
 user	通过名称和id进行用户账户检查
 path	filepath	实现了以与目标操作系统定义文件路径相兼容的方式处理文件名路径
