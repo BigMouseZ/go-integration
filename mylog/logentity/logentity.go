@@ -38,7 +38,7 @@ func NewlogEntity(loggerLevel int, loggerFilePath, loggerFileName, loggerFileMax
 		loggerFileMax:    loggerFileMax,
 		loggerFileMaxDay: loggerFileMaxDay,
 	}
-	log.initLoaggerFile()
+	log.initLoaggerFile() // 获取文件句柄
 	return log
 }
 
@@ -70,11 +70,10 @@ func (l *logEntity) initLoaggerFile() {
 
 }
 
-func (l *logEntity) Debug(a ...interface{}) {
+func (l *logEntity) Debug(format string, args ...interface{}) {
 	if l.loggerLevel > DEBUG {
 		return
 	}
-	timeNow := "[" + time.Now().Format("2006-01-02 15:04:05") + "]"
 	pc, file, line, ok := runtime.Caller(1)
 	if ok {
 		// 判断文件是否超出大小
@@ -107,12 +106,15 @@ func (l *logEntity) Debug(a ...interface{}) {
 		default:
 			l.loggerFileMax = "10MB"
 		}
+		msg := fmt.Sprintf(format, args)
 		// fmt.Printf("文件大小：%v", formatFileSize(fileInfo.Size()))
 		fmt.Println()
 		fmt.Println(pc, file, line)
-		fileName := "[" + path.Base(file) + "]"
-		line := "[" + strconv.Itoa(line) + "]"
-		_, err := fmt.Fprintln(l.loggerFile, timeNow, fileName, line, a)
+		fileName := path.Base(file)
+
+		timeNow := time.Now().Format("2006-01-02 15:04:05")
+		logMsg := fmt.Sprintf("[%s][%s:%d][%s][%s]%s", timeNow, fileName, line, file, "Debug", msg)
+		_, err := fmt.Fprintln(l.loggerFile, logMsg)
 		if err != nil {
 			fmt.Println("DEBUG日志记录失败！", err)
 		}
