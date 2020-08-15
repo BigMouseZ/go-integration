@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"runtime"
 	"sync"
 	"testing"
 	"time"
@@ -26,6 +27,19 @@ func TestWaitGroup(t *testing.T) {
 	}
 	fmt.Println("main func")
 	time.Sleep(time.Second * 2)
+	// 等hello执行完（执行hello函数的那个goroutine执行完）
+	wg.Wait()
+
+}
+
+func TestGOMaxProcs(t *testing.T) {
+	runtime.GOMAXPROCS(1) //设置go程序只用一个逻辑核心，
+	wg.Add(10)            // 计数器+10
+	for i := 0; i < 10; i++ {
+		go hello(i) // 1 创建一个goroutine 2.在新的goroutine中执行hello函数
+	}
+	fmt.Println("main func")
+	//time.Sleep(time.Second * 2)
 	// 等hello执行完（执行hello函数的那个goroutine执行完）
 	wg.Wait()
 
