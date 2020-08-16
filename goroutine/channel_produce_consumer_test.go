@@ -39,7 +39,7 @@ func producer() {
 			id:  id,
 			num: ret,
 		}
-		//2、把随机数发送到通道里面
+		//2、把随机数发送到通道里面,测试
 		ch1 <- tem
 	}
 
