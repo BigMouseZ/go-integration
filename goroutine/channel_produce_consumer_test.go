@@ -31,6 +31,7 @@ type result struct {
 func producer() {
 	//1、生成随机数
 	var id int64
+	ch1 := make(chan *item)
 	for {
 		rand.Seed(time.Now().UnixNano())
 		ret := rand.Int63()
@@ -46,8 +47,9 @@ func producer() {
 }
 
 //消费者
-func consumer() {
+func consumer(ch1 chan *item) {
 	tem := <-ch1
+	println("消费了：", tem)
 }
 
 //打印结果
