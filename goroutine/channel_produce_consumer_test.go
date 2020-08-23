@@ -104,3 +104,54 @@ func TestPC(t *testing.T) {
 	ret := rand.Intn(101) //[1,101]
 	println(ret)*/
 }
+
+var ch1 = make(chan string, 100)
+var ch2 = make(chan string, 100)
+
+func f1(ch chan string) {
+	for i := 0; i < 100; i++ {
+		ch <- fmt.Sprintf("f1:%d", i)
+		time.Sleep(time.Microsecond * 50)
+	}
+}
+
+func f2(ch chan string) {
+	for i := 0; i < 100; i++ {
+		ch <- fmt.Sprintf("f2:%d", i)
+		time.Sleep(time.Microsecond * 100)
+	}
+}
+
+//select 多路复用  练习1
+func TestSelect1(t *testing.T) {
+	go f1(ch1)
+	go f2(ch2)
+	time.Sleep(time.Second * 3)
+	for {
+		select {
+		case ret := <-ch1:
+			fmt.Println(ret)
+		case ret := <-ch2:
+			fmt.Println(ret)
+		default:
+			fmt.Println("暂时取不到值")
+
+			return
+		}
+	}
+}
+
+//select 多路复用  练习2
+func TestSelect2(t *testing.T) {
+	var ch = make(chan int, 1)
+
+	for i := 0; i < 10; i++ {
+		select {
+		//case:跟随通道的操作，发送值或者接收值
+		case ch <- i: //尝试往ch中发送数据
+		case ret := <-ch:
+			fmt.Println(ret)
+		}
+
+	}
+}
