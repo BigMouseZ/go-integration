@@ -135,6 +135,7 @@ func TestSelect1(t *testing.T) {
 			fmt.Println(ret)
 		default:
 			fmt.Println("暂时取不到值")
+			//结束for循环
 
 			return
 		}
@@ -148,8 +149,8 @@ func TestSelect2(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		select {
 		//case:跟随通道的操作，发送值或者接收值
-		case ch <- i: //尝试往ch中发送数据
-		case ret := <-ch:
+		case ch <- i: //尝试往ch中发送数据，放不成功就不执行此case
+		case ret := <-ch: //尝试从ch中接收值
 			fmt.Println(ret)
 		}
 
