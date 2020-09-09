@@ -10,4 +10,5 @@ require (
 	github.com/lib/pq v1.7.0
 	github.com/minio/minio-go/v6 v6.0.57
 	github.com/streadway/amqp v0.0.0-20200108173154-1c71cc93ed71
+	gopkg.in/yaml.v2 v2.2.8
 )
