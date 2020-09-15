@@ -13,9 +13,12 @@ import (
 
 一、介绍
 
-go中有Context 包，专门用来简化 对于处理单个请求的多个 goroutine 之间与请求域的数据、取消信号、截止时间等相关操作，这些操作可能涉及多个 API 调用。你可以通过 go get golang.org/x/net/context 命令获取这个包。
+go中有Context 包，专门用来简化 对于处理单个请求的多个 goroutine 之间与请求域的数据、取消信号、截止时间等相关操作，这些操作可能涉及多个 API 调用。
+你可以通过 go get golang.org/x/net/context 命令获取这个包。
 
-例如：在 Go http包的Server中，每一个请求在都有一个对应的 goroutine 去处理。请求处理函数通常会启动额外的 goroutine 用来访问后端服务，比如数据库和RPC服务。用来处理一个请求的 goroutine 通常需要访问一些与请求特定的数据，比如终端用户的身份认证信息、验证相关的token、请求的截止时间。 当一个请求被取消或超时时，所有用来处理该请求的 goroutine 都应该迅速退出，然后系统才能释放这些 goroutine 占用的资源。
+例如：在 Go http包的Server中，每一个请求在都有一个对应的 goroutine 去处理。请求处理函数通常会启动额外的 goroutine 用来访问后端服务，比如数据库和RPC服务。
+用来处理一个请求的 goroutine 通常需要访问一些与请求特定的数据，比如终端用户的身份认证信息、验证相关的token、请求的截止时间。
+当一个请求被取消或超时时，所有用来处理该请求的 goroutine 都应该迅速退出，然后系统才能释放这些 goroutine 占用的资源。
 
 用context会方便很多，context是一个可继承的树状的结构。
 
@@ -94,14 +97,14 @@ func TestWithTimeout(t *testing.T) {
 
 }
 
-func gen(ctx context.Context) <-chan int {
+func worker(ctx context.Context) <-chan int {
 	dst := make(chan int)
 	n := 1
 	go func() {
 		for {
 			select {
 			case <-ctx.Done():
-				fmt.Println("i exited")
+				fmt.Println(n, "i exited")
 				return // returning not to leak the goroutine
 			case dst <- n:
 				n++
@@ -113,8 +116,9 @@ func gen(ctx context.Context) <-chan int {
 
 func test() {
 	ctx, cancel := context.WithCancel(context.Background())
+	//cancel() 通知子goroutine结束
 	defer cancel() // cancel when we are finished consuming integers
-	intChan := gen(ctx)
+	intChan := worker(ctx)
 	for n := range intChan {
 		fmt.Println(n)
 		if n == 5 {
@@ -124,9 +128,10 @@ func test() {
 }
 
 func TestWithCancel(t *testing.T) {
-	// 3、withCancel:WithCancel返回一个继承的Context,这个Context在父Context的Done被关闭时关闭自己的Done通道，或者在自己被Cancel的时候关闭自己的Done。WithCancel同时还返回一个取消函数cancel，这个cancel用于取消当前的Context。
+	// 3、withCancel:WithCancel返回一个继承的Context,这个Context在父Context的Done被关闭时关闭自己的Done通道，或者在自己被Cancel的时候关闭自己的Done。
+	// WithCancel同时还返回一个取消函数cancel，这个cancel用于取消当前的Context。
 	test()
-	time.Sleep(time.Hour)
+	time.Sleep(time.Second * 5)
 }
 
 func TestWithDeadline(t *testing.T) {
