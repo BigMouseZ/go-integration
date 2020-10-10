@@ -28,7 +28,7 @@ func main() {
 //​​//只能输出结构化日志，但是性能要高于 SugaredLogger
 var logger *zap.Logger
 
-//可以输出 结构化日志、非结构化日志。性能茶语 zap.Logger，具体可见上面的的单元测试
+//可以输出 结构化日志、非结构化日志。性能差于 zap.Logger，具体可见上面的的单元测试
 var sugarLogger *zap.SugaredLogger
 
 //​// 初始化日志 logger
