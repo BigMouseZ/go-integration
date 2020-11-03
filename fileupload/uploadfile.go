@@ -20,7 +20,7 @@ func main() {
 	// 创建一个叫mymusic的存储桶。
 	bucketName := "mymusic"
 	location := "us-east-1"
-	objectName := "testminio3.jpg"
+	objectName := "test2/test/testminio4.jpg"
 	err = minioClient.MakeBucket(bucketName, location)
 	if err != nil {
 		// 检查存储桶是否已经存在。
